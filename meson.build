@@ -13,91 +13,23 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-project (
-  'libbacktrace', ['c'],
-  version: '1.0.0',
-  license: 'BSD',
-  meson_version: '>= 0.55.0',
-  default_options: [
-    'buildtype=debug',
-    'c_std=gnu11',
+project('libbacktrace', 'c', version: '1.0.0',
+  meson_version : '>=0.57.0',
+)
+
+mod = import('unstable_external_project')
+
+p = mod.add_project (
+  'configure',
+  configure_options: [
+    '--prefix=@PREFIX@',
+    '--libdir=@PREFIX@/@LIBDIR@',
+    '--includedir=@PREFIX@/@INCLUDEDIR@',
     ],
-  )
+  env: {
+    'CFLAGS': '-fPIC',
+    }
+)
 
-cc = meson.get_compiler ('c')
+libbacktrace_dep = p.dependency('backtrace')
 
-# detect OS
-os_darwin = false
-os_linux = false
-os_freebsd = false
-os_windows = false
-if host_machine.system() == 'darwin'
-  os_darwin = true
-elif host_machine.system() == 'linux'
-  os_linux = true
-elif host_machine.system() == 'freebsd'
-  os_freebsd = true
-elif host_machine.system() == 'windows'
-  os_windows = true
-endif
-
-inc = [
-  include_directories ('.'),
-  ]
-
-config_h = configure_file (
-  output: 'config.h',
-  command: [
-    'configure',
-    ])
-
-bash = find_program ('bash')
-libfile = custom_target (
-  'libfile',
-  output: 'libbacktrace.la',
-  command: [
-    bash, '-c',
-    meson.source_root () / 'configure && ' +
-    'make -C ' + meson.source_root (),
-    ])
-
-libbacktrace_dep = declare_dependency (
-  sources: libfile)
-
-#srcs = files ([
-  #'alloc.c',
-  #'atomic.c',
-  #'elf.c',
-  #'instrumented_alloc.c',
-  #'mmap.c',
-  #'pecoff.c',
-  #'print.c',
-  #'simple.c',
-  #'state.c',
-  #'ttest.c',
-  #'unknown.c',
-  #'allocfail.c',
-  #'backtrace.c',
-  #'dwarf.c',
-  #'edtest2.c',
-  #'fileline.c',
-  #'macho.c',
-  #'mmapio.c',
-  #'nounwind.c',
-  #'posix.c',
-  #'read.c',
-  #'sort.c',
-  #'stest.c',
-  #])
-
-#libbacktrace = static_library (
-  #'libbacktrace',
-  #sources: [ srcs, config_h, ],
-  #include_directories: inc,
-  #install: false)
-
-# this is so that it can be used as a meson
-# subproject
-#libbacktrace_dep = declare_dependency (
-  #include_directories: inc,
-  #link_with: libbacktrace)
