@@ -19,7 +19,6 @@ project (
   license: 'BSD',
   meson_version: '>= 0.55.0',
   default_options: [
-    'warning_level=2',
     'buildtype=debug',
     'c_std=gnu11',
     ],
