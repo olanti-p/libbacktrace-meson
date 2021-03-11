@@ -51,40 +51,53 @@ config_h = configure_file (
     'configure',
     ])
 
-srcs = files ([
-  'alloc.c',
-  'atomic.c',
-  'elf.c',
-  'instrumented_alloc.c',
-  'mmap.c',
-  'pecoff.c',
-  'print.c',
-  'simple.c',
-  'state.c',
-  'ttest.c',
-  'unknown.c',
-  'allocfail.c',
-  'backtrace.c',
-  'dwarf.c',
-  'edtest2.c',
-  'fileline.c',
-  'macho.c',
-  'mmapio.c',
-  'nounwind.c',
-  'posix.c',
-  'read.c',
-  'sort.c',
-  'stest.c',
-  ])
+bash = find_program ('bash')
+libfile = custom_target (
+  'libfile',
+  output: 'libbacktrace.la',
+  command: [
+    bash, '-c',
+    meson.source_root () / 'configure && ' +
+    'make -C ' + meson.source_root (),
+    ])
 
-libbacktrace = static_library (
-  'libbacktrace',
-  sources: [ srcs, config_h, ],
-  include_directories: inc,
-  install: false)
+libbacktrace_dep = declare_dependency (
+  sources: libfile)
+
+#srcs = files ([
+  #'alloc.c',
+  #'atomic.c',
+  #'elf.c',
+  #'instrumented_alloc.c',
+  #'mmap.c',
+  #'pecoff.c',
+  #'print.c',
+  #'simple.c',
+  #'state.c',
+  #'ttest.c',
+  #'unknown.c',
+  #'allocfail.c',
+  #'backtrace.c',
+  #'dwarf.c',
+  #'edtest2.c',
+  #'fileline.c',
+  #'macho.c',
+  #'mmapio.c',
+  #'nounwind.c',
+  #'posix.c',
+  #'read.c',
+  #'sort.c',
+  #'stest.c',
+  #])
+
+#libbacktrace = static_library (
+  #'libbacktrace',
+  #sources: [ srcs, config_h, ],
+  #include_directories: inc,
+  #install: false)
 
 # this is so that it can be used as a meson
 # subproject
-libbacktrace_dep = declare_dependency (
-  include_directories: inc,
-  link_with: libbacktrace)
+#libbacktrace_dep = declare_dependency (
+  #include_directories: inc,
+  #link_with: libbacktrace)
