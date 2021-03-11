@@ -45,6 +45,12 @@ inc = [
   include_directories ('.'),
   ]
 
+config_h = configure_file (
+  output: 'config.h',
+  command: [
+    'configure',
+    ])
+
 srcs = files ([
   'alloc.c',
   'atomic.c',
@@ -73,7 +79,7 @@ srcs = files ([
 
 libbacktrace = static_library (
   'libbacktrace',
-  sources: srcs,
+  sources: [ srcs, config_h, ],
   include_directories: inc,
   install: false)
 
