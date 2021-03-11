@@ -14,7 +14,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 project('libbacktrace', 'c', version: '1.0.0',
-  meson_version : '>=0.57.0',
+  meson_version : '>=0.56.0',
 )
 
 mod = import('unstable_external_project')
